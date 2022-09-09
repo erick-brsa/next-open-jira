@@ -1,33 +1,15 @@
-import { FC, ReactNode, useReducer } from 'react';
+import { FC, ReactNode, useReducer, useEffect } from 'react';
 import { Entry } from '../../interfaces';
 import { EntriesContext, entriesReducer } from './';
 import { v4 as uuidv4 } from 'uuid';
+import { entriesApi } from '../../config';
 
 export interface EntriesState {
   entries: Entry[];
 }
 
 const Entries_INITIAL_STATE: EntriesState = {
-  entries: [
-    {
-        _id: uuidv4(),
-        description: 'Pendiente: wserlkjgkjashdfbkasjdhfcg34kjashdfgwelkjwhr',
-        status: 'pending',
-        createdAt: Date.now(),
-    },
-    {
-        _id: uuidv4(),
-        description: 'En progreso: LÑKSHDFLKJ lksjhlkesr .aksdjfhlerkjh lskjhfgleksjr paush 4w',
-        status: 'in-progress',
-        createdAt: Date.now(),
-    },
-    {
-        _id: uuidv4(),
-        description: 'Finalizado: asdflkahe lasudfhqw elkjahsdfoiuwh rp48y ouw o384y 3ouigoaujdhfowuiegr lkasjdhf lsuehr',
-        status: 'finished',
-        createdAt: Date.now(),
-    },
-  ],
+  entries: [],
 };
 
 interface Props {
@@ -38,23 +20,38 @@ export const EntriesProvider: FC<Props> = ({ children }) => {
 
   const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE);
 
-  const createEntry = (description: string) => {
-    const newEntry: Entry = {
-      _id: uuidv4(),
-      description,
-      createdAt: Date.now(),
-      status: 'pending'
-    }
+  useEffect(() => {
+    refreshEntries();
+  }, []);
+
+  const refreshEntries = async () => {
+    // No se pueden utilizar los modelos de mongoose en el front
+    const { data } = await entriesApi.get<Entry[]>('/entries');
     dispatch({
-      type: 'Entry - Create',
-      payload: newEntry
+      type: 'Entry - Refresh Data',
+      payload: data
     })
   }
-  const updateEntry = (entry: Entry) => {
+
+  const createEntry = async (description: string) => {
+    const { data } = await entriesApi.post<Entry>('/entries', { description })
     dispatch({
-      type: 'Entry - Updated',
-      payload: entry
+      type: 'Entry - Create',
+      payload: data
     })
+  }
+
+  const updateEntry = async ({ _id, description, status }: Entry) => {
+    try {
+      const { data } = await entriesApi.put<Entry>(`/entries/${_id}`, { description, status });
+      
+      dispatch({
+        type: 'Entry - Updated',
+        payload: data
+      })
+    } catch (error) {
+      console.log({ error })
+    }
   }
 
   return (

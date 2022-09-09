@@ -2,12 +2,18 @@ import { Entry } from '../../interfaces';
 import { EntriesState } from './'
 
 type EntriesActionType =
+| { type: 'Entry - Refresh Data', payload: Entry[] }
 | { type: 'Entry - Create', payload: Entry }
 | { type: 'Entry - Delete' }
 | { type: 'Entry - Updated', payload: Entry }
 
 export const entriesReducer = (state: EntriesState, action: EntriesActionType): EntriesState => {
     switch (action.type) {
+        case 'Entry - Refresh Data':
+            return {
+                ...state,
+                entries: [...action.payload]
+            }
         case 'Entry - Create':
             return {
                 ...state,
