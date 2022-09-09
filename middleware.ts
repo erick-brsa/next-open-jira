@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 
 export function middleware (req: NextRequest) {
 
-    if (req.nextUrl.pathname.startsWith('/api/entries')) {
+    if (req.nextUrl.pathname.startsWith('/api/entries/:id')) {
         const id = req.nextUrl.pathname.replace('/api/entries', '');
         const checkMongoIDRegExp = new RegExp("^[0-9a-fA-F]{24}$");
         

@@ -15,8 +15,13 @@ mongodb://localhost:27017/entriesdb
 ## Configurar las variables de entorno
 Renombar el archivo __.env.template__ as __.env.local__
 
-# Ejecutar el proyecto
+## Instalar las dependencias
+```bash
+yarn install
 ```
+
+## Ejecutar el proyecto
+```bash
 yarn dev
 ```
 
