@@ -2,14 +2,18 @@ import { Card, CardActionArea, CardActions, CardContent, Typography } from "@mui
 import { Entry } from "../../interfaces";
 import { DragEvent, FC } from 'react';
 import { useUI } from "../../hooks";
+import { useRouter } from "next/router";
+import { dateFunctions } from '../../utils'
 
 interface Props {
 	entry: Entry;
 }
 
 export const EntryCard: FC<Props> = ({ entry }) => {
-
+	
 	const { startDragging, endDragging } = useUI();
+
+	const router = useRouter()
 
 	const onDragStart = (e: DragEvent) => {
 		e.dataTransfer.setData('text', entry._id)
@@ -21,12 +25,17 @@ export const EntryCard: FC<Props> = ({ entry }) => {
 		// TODO: Aquí se termina el drag
 		endDragging();
 	}
+
+	const handleOnClick = () => {
+		router.push(`/entries/${entry._id}`)
+	}
 	
   	return (
 		<Card sx={{ marginBottom: 1 }}
 			onDragStart={onDragStart}
 			onDragEnd={onDragEnd}
 			draggable
+			onClick={handleOnClick}
 		>
 			<CardActionArea>
 				<CardContent>
@@ -34,7 +43,9 @@ export const EntryCard: FC<Props> = ({ entry }) => {
 						{entry.description}
 					</Typography>
 					<CardActions sx={{ display: 'flex', justifyContent: 'end', paddingRight: 2 }}>
-						<Typography variant='body2'>Hace 30 minutos</Typography>
+						<Typography variant='body2'>
+							{dateFunctions.getFormatDistanceToNow(entry.createdAt)}
+						</Typography>
 					</CardActions>
 				</CardContent>
 			</CardActionArea>
