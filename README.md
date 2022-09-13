@@ -27,7 +27,7 @@ yarn dev
 
 
 ## LLenar la base de datos con información de prueba
-Addecer a:
+Acceder a:
 ```
 http://localhost:3000/api/seed
 ```
