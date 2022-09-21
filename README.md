@@ -1,4 +1,4 @@
-# Next.js OpenJira App
+# OpenJira App
 Para correr localmente se necesita la base de datos
 
 ```bash
